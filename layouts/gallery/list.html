@@ -1,0 +1,63 @@
+{{ define "head" }}
+<meta name="description" content="{{ .Title }} of {{ .Site.Title }}">
+<link rel="stylesheet" href="{{ (printf "%scss/list.css" (.Site.Params.staticPath | default "")) | relURL }}" media="all">
+{{ end }}
+
+{{ define "title" }}
+{{.Title }} | {{ .Site.Title }}
+{{ end }}
+
+{{ define "main" }}
+<div class="container pt-5">
+    <h2 class="text-center pb-4">{{.Title}}</h2>
+    <div class="row">
+        {{ range $index, $element := .Pages }}
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm" style="background-color: var(--secondary-color); border-radius: 1rem; overflow: hidden;">
+                
+                {{ if .Params.images }}
+                <!-- Carousel for multiple images -->
+                <div id="carousel-{{ $index }}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {{ range $imgIdx, $img := .Params.images }}
+                        <div class="carousel-item {{ if eq $imgIdx 0 }}active{{ end }}">
+                            <img src="{{ $img }}" class="d-block w-100" style="height: 300px; object-fit: cover;" alt="Gallery Image">
+                        </div>
+                        {{ end }}
+                    </div>
+                    {{ if gt (len .Params.images) 1 }}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ $index }}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ $index }}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    {{ end }}
+                </div>
+                {{ else if .Params.image }}
+                <!-- Single image -->
+                <img src="{{ .Params.image }}" class="card-img-top" style="height: 300px; object-fit: cover;" alt="{{ .Title }}">
+                {{ end }}
+
+                <div class="card-body bg-transparent p-4">
+                    <h4 class="card-title text-decoration-none" style="color: var(--text-color);">
+                        {{ .Title }}
+                    </h4>
+                    <p class="card-text mt-2" style="color: var(--text-secondary-color);">
+                        {{ .Summary }}
+                    </p>
+                </div>
+                <div class="mt-auto post-footer bg-transparent p-4 pt-0 border-0 d-flex justify-content-between align-items-center">
+                    <span class="text-muted" style="font-size: 0.9rem;">{{ .Date | time.Format (":date_long" | default "January 2, 2006") }}</span>
+                    {{ if .RelPermalink }}
+                    <a href="{{ .RelPermalink }}" class="btn btn-outline-primary btn-sm" style="border-radius: 0.5rem;">Read more</a>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

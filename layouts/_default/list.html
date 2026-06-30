@@ -1,0 +1,170 @@
+{{ define "head" }}
+<meta name="description" content="{{ .Title }} of {{ .Site.Title }}">
+<link rel="stylesheet" href="{{ (printf "%scss/list.css" (.Site.Params.staticPath | default "")) | relURL }}" media="all">
+<script defer src="{{ (printf "%sfontawesome-6/all-6.4.2.js" (.Site.Params.staticPath | default "")) | relURL }}"></script>
+<style>
+    .sticky-sidebar {
+        position: sticky;
+        top: 100px;
+    }
+    .tag-filter {
+        cursor: pointer;
+    }
+</style>
+{{ end }}
+
+{{ define "title" }}
+{{.Title }} | {{ .Site.Title }}
+{{ end }}
+
+{{ define "main" }}
+<div class="container pt-5" id="list-page">
+    <h2 class="text-center pb-4">{{.Title}}</h2>
+    <div class="row">
+        
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="sticky-sidebar">
+                <!-- Sorting -->
+                <h5 class="mb-3">Sort By</h5>
+                <select id="sortSelect" class="form-select mb-4 bg-transparent text-secondary shadow-sm" style="border-radius: 0.5rem;">
+                    <option value="date-desc">Date (Newest)</option>
+                    <option value="date-asc">Date (Oldest)</option>
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                </select>
+
+                <!-- Tags -->
+                <h5 class="mb-3">Filter by Tags</h5>
+                <div id="tagFilters" class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-sm btn-primary active" data-tag="all">All</button>
+                    {{ $tagCounts := dict }}
+                    {{ range .Pages }}
+                        {{ range .Params.tags }}
+                            {{ $tag := . }}
+                            {{ $count := default 0 (index $tagCounts $tag) }}
+                            {{ $tagCounts = merge $tagCounts (dict $tag (add $count 1)) }}
+                        {{ end }}
+                    {{ end }}
+                    {{ range $tag, $count := $tagCounts }}
+                    <button class="btn btn-sm btn-outline-secondary tag-filter" data-tag="{{ $tag | lower }}">{{ $tag }} ({{ $count }})</button>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="col-lg-9">
+            <div class="row" id="itemsContainer">
+                {{ range .Pages }}
+                <div class="col-lg-6 col-md-6 mb-4 filter-item" 
+                     data-title="{{ .Title | lower }}" 
+                     data-date="{{ .Date.Unix }}" 
+                     data-tags="{{ if .Params.tags }}{{ delimit .Params.tags "," | lower }}{{ end }}">
+                    
+                    <div class="card h-100 border-0" style="background-color: var(--secondary-color); border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                        {{ if and (not (.Site.Params.listPages.disableFeaturedImage | default false)) (.Params.image) }}
+                        <div class="card-header p-0 border-0">
+                            <a href="{{ .RelPermalink }}">
+                                <img src="{{ .Params.image }}" class="card-img-top" alt="{{ .Title }}" style="object-fit: cover; height: 200px;">
+                            </a>
+                        </div>
+                        {{ end }}
+                        <div class="card-body bg-transparent p-4">
+                            <a href="{{ .RelPermalink }}" class="primary-font card-title text-decoration-none" style="color: var(--text-color);">
+                                <h5 class="card-title bg-transparent" title="{{ .Title }}">{{ .Title | truncate 50 }}</h5>
+                            </a>
+                            <div class="card-text secondary-font mt-2" style="color: var(--text-secondary-color);">
+                                <p>{{ .Summary | truncate 200 }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-auto post-footer bg-transparent p-4 pt-0 border-0 d-flex justify-content-between align-items-center">
+                            <span class="text-muted" style="font-size: 0.9rem;">{{ .Date | time.Format (":date_long" | default "January 2, 2006") }}</span>
+                            <div>
+                                {{ if .Params.github }}
+                                <a href="{{ .Params.github }}" class="btn btn-sm btn-outline-secondary me-2" target="_blank" style="border-radius: 0.5rem;"><i class="fab fa-github"></i></a>
+                                {{ end }}
+                                {{ range .Params.links }}
+                                <a href="{{ .url }}" class="btn btn-sm btn-outline-secondary me-2" target="_blank" style="border-radius: 0.5rem;"><i class="fas fa-link"></i></a>
+                                {{ end }}
+                                <a href="{{ .RelPermalink }}" class="btn btn-outline-primary btn-sm" style="border-radius: 0.5rem;">Know more</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const itemsContainer = document.getElementById("itemsContainer");
+        let items = Array.from(itemsContainer.getElementsByClassName("filter-item"));
+        const sortSelect = document.getElementById("sortSelect");
+        const tagButtons = document.querySelectorAll(".tag-filter, [data-tag='all']");
+        
+        let currentTag = "all";
+
+        function renderItems() {
+            // Filter
+            items.forEach(item => {
+                const itemTags = item.getAttribute("data-tags") ? item.getAttribute("data-tags").split(",") : [];
+                if (currentTag === "all" || itemTags.includes(currentTag)) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            // Sort
+            const sortVal = sortSelect.value;
+            let visibleItems = items.filter(item => item.style.display !== "none");
+            
+            visibleItems.sort((a, b) => {
+                if (sortVal === "date-desc") {
+                    return parseInt(b.getAttribute("data-date")) - parseInt(a.getAttribute("data-date"));
+                } else if (sortVal === "date-asc") {
+                    return parseInt(a.getAttribute("data-date")) - parseInt(b.getAttribute("data-date"));
+                } else if (sortVal === "name-asc") {
+                    return a.getAttribute("data-title").localeCompare(b.getAttribute("data-title"));
+                } else if (sortVal === "name-desc") {
+                    return b.getAttribute("data-title").localeCompare(a.getAttribute("data-title"));
+                }
+            });
+
+            // Clear container and append sorted visible items
+            items.forEach(item => {
+                if(item.parentNode) {
+                    item.parentNode.removeChild(item);
+                }
+            });
+            visibleItems.forEach(item => itemsContainer.appendChild(item));
+        }
+
+        // Tag click event
+        tagButtons.forEach(btn => {
+            btn.addEventListener("click", function() {
+                // Update active class
+                tagButtons.forEach(b => {
+                    b.classList.remove("btn-primary", "active");
+                    b.classList.add("btn-outline-secondary");
+                });
+                this.classList.remove("btn-outline-secondary");
+                this.classList.add("btn-primary", "active");
+
+                currentTag = this.getAttribute("data-tag");
+                renderItems();
+            });
+        });
+
+        // Sort change event
+        sortSelect.addEventListener("change", renderItems);
+        
+        // Initial render
+        renderItems();
+    });
+</script>
+{{ end }}
