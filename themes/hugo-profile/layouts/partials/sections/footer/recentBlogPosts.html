@@ -1,0 +1,47 @@
+{{- /* Get both blogs and projects */ -}}
+{{ $allSectionPosts := where .Site.RegularPages "Section" "in" (slice "blogs" "projects") }}
+{{ $currentNumOfrecentPosts := len $allSectionPosts }} 
+{{ if and (gt $currentNumOfrecentPosts 0) (.Site.Params.footer.recentPosts.enable | default false) }} 
+<div class="container py-3" id="recent-posts">
+    {{ $recentPostsCount := .Site.Params.footer.recentPosts.count | default 3 }}
+    {{ $recentPosts := $allSectionPosts | first $recentPostsCount }}
+    <div class="h3 text-center text-secondary py-3">
+        {{ .Site.Params.footer.recentPosts.title | default (i18n "recent_posts") }}
+    </div>
+    <div class="row justify-content-center">
+        {{ range $recentPosts }}
+        <div class="col-lg-4 col-md-6 pt-2">
+            <div class="card h-100">
+                {{ if and (not (.Site.Params.footer.recentPosts.disableFeaturedImage | default false)) (.Params.image) }}
+                <div class="card-header">
+                    <a href="{{ .RelPermalink }}">
+                        <img src="{{ .Params.image }}" class="card-img-top" alt="{{ .Title }}">
+                    </a>
+                </div>
+                {{ end }}
+                <div class="card-body bg-transparent p-3 shadow-sm">
+                    <a href="{{ .RelPermalink }}" class="primary-font card-title">
+                        <h5 class="card-title bg-transparent" title="{{ .Title }}">{{ .Title | truncate 25 }}</h5>
+                    </a>
+                    <div class="card-text secondary-font">
+                        <p>{{ .Summary | truncate 300}}</p>
+                    </div>
+                </div>
+                <div class="mt-auto card-footer d-flex justify-content-between align-items-center">
+                    <span class="text-muted" style="font-size: 0.9rem;">{{ .Date | time.Format (":date_long" | default "January 2, 2006") }}</span>
+                    <div>
+                        {{ if .Params.github }}
+                        <a href="{{ .Params.github }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" style="border-radius: 0.5rem;"><i class="fab fa-github"></i></a>
+                        {{ end }}
+                        {{ range .Params.links }}
+                        <a href="{{ .url }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" style="border-radius: 0.5rem;"><i class="fas fa-link"></i></a>
+                        {{ end }}
+                        <a href="{{ .RelPermalink }}" class="btn btn-outline-info btn-sm" style="border-radius: 0.5rem;">Know more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ end }}
