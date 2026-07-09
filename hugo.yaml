@@ -2,6 +2,7 @@ baseURL: "/"
 languageCode: "en-us"
 title: "Hugo Profile"
 theme: hugo-profile
+relativeURLs: true
 
 # Multilingual configuration
 defaultContentLanguage: "en"
