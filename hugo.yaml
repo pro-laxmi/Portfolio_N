@@ -67,10 +67,10 @@ outputs:
 enableRobotsTXT: true
 
 #services:
-  #googleAnalytics:
-    #id: G-MEASUREMENT_ID
-  #disqus:
-    #shortname: your-disqus-shortname
+#googleAnalytics:
+#id: G-MEASUREMENT_ID
+#disqus:
+#shortname: your-disqus-shortname
 
 pagination:
   pagerSize: 3
@@ -80,12 +80,10 @@ markup:
     renderer:
       unsafe: true
 
-
-
 params:
   title: "Laxmidhar Panda"
   description: "A Junior Undergraduate (3rd Year) Computer Science and Engineering student at IIT Gandhinagar with a strong foundation in data structures, algorithms, databases, and software engineering."
-  staticPath: ""  # The path to serve the static files from
+  staticPath: "" # The path to serve the static files from
   favicon: "/fav.png"
 
   # Whether to serve bootstrap css and js files from CDN or not. Can be set to true, "css" or "js" to choose between
@@ -143,8 +141,8 @@ params:
     disableSearch: false
     # searchPlaceholder: "Search"
     stickyNavBar:
-      enable : true
-      showOnScrollUp : true
+      enable: true
+      showOnScrollUp: true
     enableSeparator: false
     menus:
       disableAbout: false
@@ -160,7 +158,7 @@ params:
     intro: "Hi, my name is"
     title: "Laxmidhar Panda"
     subtitle: "Junior Undergraduate at IIT Gandhinagar"
-    content: 
+    content:
       "I am a Junior Undergraduate studying Computer Science and Engineering at the Indian Institute of Technology Gandhinagar. I am deeply interested in artificial intelligence, scalable database systems, and full-stack development. My academic journey has been driven by a passion for solving complex computational problems and building performant systems.
 
 
@@ -234,7 +232,7 @@ params:
           name: "IIT Gandhinagar"
           url: "https://iitgn.ac.in"
         date: "2024 - Present"
-        GPA: "CPI: 8.33"
+        GPA: "CPI: 8.31"
         content: |-
           - Core focus on Data Structures, Algorithms, OOP, DBMS.
           - Built various projects spanning AI, deep learning, databases, and semantic search.
@@ -273,7 +271,7 @@ params:
       - title: Avanti Fellows
         year: "2022"
         content: Selected for Avanti Fellows through the highly competitive Dakshana National Exam, showcasing academic potential and commitment to STEM.
-      - title: Agrayodhi  
+      - title: Agrayodhi
         year: "2022"
         content: Received "Agrayodhi" by Sambad English for securing 97.6 percentage in 10th grade.
       - title: Inspire Award MANAK
