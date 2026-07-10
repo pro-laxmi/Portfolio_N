@@ -1,0 +1,9 @@
+{{- $src := .Destination -}}
+{{- $src = replace $src "../" "" -}}
+{{- $src = replace $src "static/" "/" -}}
+{{- if not (hasPrefix $src "http") -}}
+  {{- if not (hasPrefix $src "/") -}}
+    {{- $src = printf "/%s" $src -}}
+  {{- end -}}
+{{- end -}}
+<img src="{{ $src | safeURL }}" alt="{{ .Text }}" {{ with .Title }}title="{{ . }}"{{ end }} class="img-fluid mx-auto d-block rounded shadow-sm my-4" />

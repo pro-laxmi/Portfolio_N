@@ -62,14 +62,8 @@
                      data-date="{{ .Date.Unix }}" 
                      data-tags="{{ if .Params.tags }}{{ delimit .Params.tags "," | lower }}{{ end }}">
                     
-                    <div class="card h-100 border-0" style="background-color: var(--secondary-color); border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-                        {{ if and (not (.Site.Params.listPages.disableFeaturedImage | default false)) (.Params.image) }}
-                        <div class="card-header p-0 border-0">
-                            <a href="{{ .RelPermalink }}">
-                                <img src="{{ .Params.image }}" class="card-img-top" alt="{{ .Title }}" style="object-fit: cover; height: 200px;">
-                            </a>
-                        </div>
-                        {{ end }}
+                    <div class="card border-0" style="background-color: var(--secondary-color); border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+
                         <div class="card-body bg-transparent p-4">
                             <a href="{{ .RelPermalink }}" class="primary-font card-title text-decoration-none" style="color: var(--text-color);">
                                 <h5 class="card-title bg-transparent" title="{{ .Title }}">{{ .Title | truncate 50 }}</h5>

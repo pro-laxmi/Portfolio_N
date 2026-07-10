@@ -1,0 +1,10 @@
+{{ $src := .Get "src" }}
+{{ $path := printf "svgs/%s" $src }}
+{{ $svg := resources.Get $path }}
+{{ if $svg }}
+  <div class="svg-container" style="margin: 2rem 0;">
+    {{ $svg.Content | safeHTML }}
+  </div>
+{{ else }}
+  <p style="color: red;">[SVG Error: Could not find assets/svgs/{{ $src }}]</p>
+{{ end }}
